@@ -62,10 +62,18 @@ def patch_shipment(session: Session, shipment_id: int, shipment_data: ShipmentPa
 
 
 
+
 def delete_shipment(session: Session, shipment_id: int) -> dict:
-    shipment = get_shipment_by_id(session, shipment_id)
+    shipment = session.get(Shipment, shipment_id)
+
+    if shipment is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Shipment not found",
+        )
 
     session.delete(shipment)
     session.commit()
 
     return {"message": "Shipment deleted successfully"}
+
